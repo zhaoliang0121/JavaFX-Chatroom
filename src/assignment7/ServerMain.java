@@ -17,7 +17,7 @@ public class ServerMain extends Observable {
 
 	private void setUpNetworking() throws Exception {
 		@SuppressWarnings("resource")
-		ServerSocket serverSock = new ServerSocket(4242);
+		ServerSocket serverSock = new ServerSocket(5000);
 		while (true) {
 			Socket clientSocket = serverSock.accept();
 			ClientObserver writer = new ClientObserver(clientSocket.getOutputStream());

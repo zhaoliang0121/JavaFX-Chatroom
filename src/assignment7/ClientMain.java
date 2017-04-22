@@ -72,5 +72,6 @@ public class ClientMain extends Application {
         } catch (Exception e){
             e.printStackTrace();
         }
+        launch();
     }
 }
