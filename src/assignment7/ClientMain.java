@@ -5,11 +5,17 @@ package assignment7;
 
 import java.io.*;
 import java.net.Socket;
+
+import javafx.application.Application;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 
 
-public class ClientMain{
+public class ClientMain extends Application {
 
     @FXML
     private Button Send;
@@ -23,6 +29,19 @@ public class ClientMain{
 
     private PrintWriter writer;
     private BufferedReader reader;
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("ChatRoom.fxml"));
+            Scene scene = new Scene(root);
+            primaryStage.setTitle("Chat Room");
+            primaryStage.setScene(scene);
+            primaryStage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
     private void setUpNetworking() throws Exception {
@@ -44,6 +63,14 @@ public class ClientMain{
             } catch (IOException e){
                 e.printStackTrace();
             }
+        }
+    }
+
+    public static void main(String args[]){
+        try {
+            new ClientMain().setUpNetworking();
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 }
