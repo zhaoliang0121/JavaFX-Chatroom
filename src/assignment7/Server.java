@@ -1,7 +1,27 @@
 package assignment7;
 
-/**
- * Created by Zohaib on 4/22/2017.
- */
-public class Server {
+import javafx.application.Application;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+public class Server extends Application{
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("ChatRoom.fxml"));
+            Scene scene = new Scene(root);
+            primaryStage.setTitle("Chat Room");
+            primaryStage.setScene(scene);
+            primaryStage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String args[]){
+        launch();
+    }
 }
