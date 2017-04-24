@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Optional;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -31,13 +32,16 @@ public class ClientMain extends Application {
 	private MenuBar menu;
 	private ComboBox<String> color;
 	private ComboBox<String> kaomoji;
+	private TextInputDialog usernamePop;
+	private String username;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		try {
 			setUpNetworking();
-			initView();
+			usernameInput();
 			primaryStage.setScene(new Scene(anchorPane, 770, 401));
+			primaryStage.setTitle("Log in as: " + username);
 			primaryStage.show();
 			primaryStage.setOnCloseRequest(event -> {
 				System.exit(0);
@@ -47,8 +51,26 @@ public class ClientMain extends Application {
 			e.printStackTrace();
 		}
 	}
-
-	private void initView() throws Exception {
+	
+	public String getUserName(){
+		return this.username;
+	}
+	
+	private void usernameInput(){
+		usernamePop = new TextInputDialog();
+		usernamePop.setTitle("Enter username");
+		usernamePop.setHeaderText("Enter a user name you prefer");
+		usernamePop.setContentText("Enter:");
+		Optional<String> input = usernamePop.showAndWait();
+		if (input.isPresent()) {
+			try {
+				username = input.get();
+				initView();
+			} catch (Exception e) {
+			}
+		}
+	}
+	private void initView(){
 		anchorPane = new AnchorPane();
 		elements = new ArrayList<Node>();
 
@@ -96,7 +118,7 @@ public class ClientMain extends Application {
 
 			@Override
 			public void handle(ActionEvent event) {
-				writer.println(input.getText());
+				writer.println(username + ": " + input.getText());
 				writer.flush();
 				input.clear();
 
