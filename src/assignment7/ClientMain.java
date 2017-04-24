@@ -98,6 +98,16 @@ public class ClientMain extends Application {
 		input = new TextField();
 		input.setPrefSize(524, 76);
 		input.setPromptText("Enter message");
+		input.setOnKeyPressed(new EventHandler<KeyEvent>() {
+           		 @Override
+           		 public void handle(KeyEvent event) {
+                if(event.getCode().equals(KeyCode.ENTER)){
+                    writer.println(username + ": " + input.getText());
+                    writer.flush();
+                    input.clear();
+                	}
+           	 }
+        		});
 		elements.add(input);
 
 		chat = new TextArea();
