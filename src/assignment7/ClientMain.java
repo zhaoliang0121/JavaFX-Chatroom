@@ -3,8 +3,13 @@ package assignment7;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -15,7 +20,6 @@ import javafx.stage.Stage;
 
 public class ClientMain extends Application {
 
-
 	private ClientObserver writer;
 	private BufferedReader reader;
 	private AnchorPane anchorPane;
@@ -23,66 +27,117 @@ public class ClientMain extends Application {
 	private TextField input;
 	private TextArea chat;
 	private Button sendButton;
-
+	private TextArea userList;
+	private MenuBar menu;
+	private ComboBox<String> color;
+	private ComboBox<String> kaomoji;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		try {
 			setUpNetworking();
 			initView();
-			primaryStage.setScene(new Scene(anchorPane, 535, 544));
+			primaryStage.setScene(new Scene(anchorPane, 770, 401));
 			primaryStage.show();
-			primaryStage.setOnCloseRequest(
-					event -> {
-						System.exit(0);
-					}
-					);
+			primaryStage.setOnCloseRequest(event -> {
+				System.exit(0);
+			});
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void initView(){
+	private void initView() throws Exception {
 		anchorPane = new AnchorPane();
 		elements = new ArrayList<Node>();
-		
+
+		menu = new MenuBar();
+		menu.setPrefSize(770, 32);
+		Menu file = new Menu("File");
+		MenuItem item = new MenuItem("Close");
+		item.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				System.exit(0);
+
+			}
+
+		});
+		file.getItems().add(item);
+		menu.getMenus().add(file);
+		Menu help = new Menu("Help");
+		MenuItem item2 = new MenuItem("About");
+		help.getItems().add(item2);
+		menu.getMenus().add(help);
+		elements.add(menu);
+
 		input = new TextField();
-		input.setPrefSize(510, 41);
+		input.setPrefSize(524, 76);
 		input.setPromptText("Enter message");
 		elements.add(input);
-		
+
 		chat = new TextArea();
-		chat.setPrefSize(510, 342);
+		chat.setPrefSize(586, 269);
 		chat.setWrapText(true);
 		elements.add(chat);
-		
+
+		userList = new TextArea();
+		userList.setPrefSize(161, 269);
+		userList.setWrapText(true);
+		elements.add(userList);
+
 		sendButton = new Button();
-		sendButton.setPrefSize(50, 27);
+		sendButton.setPrefSize(61, 76);
 		sendButton.setText("Send");
 		elements.add(sendButton);
-		sendButton.setOnAction(new EventHandler<ActionEvent>(){
+		sendButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
 				writer.println(input.getText());
 				writer.flush();
 				input.clear();
-				
+
 			}
-			
+
 		});
-		
+
+		color = new ComboBox<String>();
+		color.getItems().addAll("Red", "Blue", "Green", "Black");
+		color.setPromptText("Select a color");
+		color.setPrefSize(161, 31);
+		elements.add(color);
+
+		kaomoji = new ComboBox<String>();
+		kaomoji.setPrefSize(161, 31);
+		kaomoji.getItems().addAll("ヽ(`⌒´メ)ノ", "(눈_눈)", "(◕‿◕)♡", "ლ(¯ロ¯ლ)");
+		kaomoji.setPromptText("Pick your emoji!~");
+		kaomoji.valueProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				input.setText(input.getText() + newValue);
+			}
+		});
+		elements.add(kaomoji);
+
 		anchorPane.getChildren().addAll(elements);
-		AnchorPane.setTopAnchor(sendButton, 452.0);
-		AnchorPane.setLeftAnchor(sendButton, 467.0);
-		AnchorPane.setTopAnchor(chat, 49.0);
-		AnchorPane.setLeftAnchor(chat, 12.0);
-		AnchorPane.setTopAnchor(input, 489.0);
-		AnchorPane.setLeftAnchor(input, 12.0);
-		
-		
-		
+		AnchorPane.setTopAnchor(menu, 0.0);
+		AnchorPane.setLeftAnchor(menu, 0.0);
+		AnchorPane.setTopAnchor(userList, 36.0);
+		AnchorPane.setLeftAnchor(userList, 602.0);
+		AnchorPane.setTopAnchor(color, 314.0);
+		AnchorPane.setLeftAnchor(color, 602.0);
+		AnchorPane.setTopAnchor(kaomoji, 352.0);
+		AnchorPane.setLeftAnchor(kaomoji, 602.0);
+		AnchorPane.setTopAnchor(sendButton, 314.0);
+		AnchorPane.setLeftAnchor(sendButton, 535.0);
+		AnchorPane.setTopAnchor(chat, 36.0);
+		AnchorPane.setLeftAnchor(chat, 10.0);
+		AnchorPane.setTopAnchor(input, 314.0);
+		AnchorPane.setLeftAnchor(input, 10.0);
+
 	}
 
 	private void setUpNetworking() throws Exception {
@@ -94,8 +149,6 @@ public class ClientMain extends Application {
 		Thread readerThread = new Thread(new IncomingReader());
 		readerThread.start();
 	}
-
-
 
 	public static void main(String args[]) {
 		try {
