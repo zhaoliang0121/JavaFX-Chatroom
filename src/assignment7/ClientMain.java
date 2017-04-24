@@ -16,6 +16,8 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -65,10 +67,13 @@ public class ClientMain extends Application {
 		if (input.isPresent()) {
 			try {
 				username = input.get();
-				initView();
+                writer.println(username);
+                initView();
 			} catch (Exception e) {
-			}
-		}
+			    e.printStackTrace();
+            }
+
+        }
 	}
 	private void initView(){
 		anchorPane = new AnchorPane();
@@ -98,16 +103,16 @@ public class ClientMain extends Application {
 		input = new TextField();
 		input.setPrefSize(524, 76);
 		input.setPromptText("Enter message");
-		input.setOnKeyPressed(new EventHandler<KeyEvent>() {
-           		 @Override
-           		 public void handle(KeyEvent event) {
+        input.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
                 if(event.getCode().equals(KeyCode.ENTER)){
                     writer.println(username + ": " + input.getText());
                     writer.flush();
                     input.clear();
-                	}
-           	 }
-        		});
+                }
+            }
+        });
 		elements.add(input);
 
 		chat = new TextArea();

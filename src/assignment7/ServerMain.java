@@ -3,9 +3,13 @@ package assignment7;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Observable;
 
 public class ServerMain extends Observable {
+
+    HashMap<String, User> Names = new HashMap<>();
 
 	public static void main(String[] args) {
 		try {
@@ -21,9 +25,13 @@ public class ServerMain extends Observable {
 		while (true) {
 			Socket clientSocket = serverSock.accept();
 			ClientObserver writer = new ClientObserver(clientSocket.getOutputStream());
-			Thread t = new Thread(new ClientHandler(clientSocket));
+            ClientHandler handler = new ClientHandler(clientSocket);
+            Thread t = new Thread(handler);
 			t.start();
 			this.addObserver(writer);
+            synchronized (handler) {
+                handler.getName();
+            }
 			System.out.println("got a connection");
 		}
 	}
@@ -35,6 +43,7 @@ public class ServerMain extends Observable {
 			Socket sock = clientSocket;
 			try {
 				reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -54,7 +63,27 @@ public class ServerMain extends Observable {
             }
         }
 
-		public void run() {
+		public boolean getName() throws IOException{
+            String message;
+            synchronized (this) {
+                try {
+                    while ((message = reader.readLine()) != null) {
+                        System.out.println(message);
+                        User check = new User(message);
+                        if (!Names.containsKey(message)) {
+                            Names.put(message, check);
+                            System.out.println(Names.size());
+                            return true;
+                        } else return false;
+                    }
+                } catch (Exception e) {
+                    System.out.println(e.getStackTrace());
+                }
+                return false;
+            }
+        }
+
+        public void run() {
 			String message;
 			try {
 				while ((message = reader.readLine()) != null) {
