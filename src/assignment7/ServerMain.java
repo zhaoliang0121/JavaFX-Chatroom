@@ -49,19 +49,6 @@ public class ServerMain extends Observable {
 			}
 		}
 		
-		public String getName() throws IOException{
-            while(true){
-                String name = reader.readLine();
-                if(name != null) {
-                    synchronized (Names) {
-                        if (!Names.containsKey(name)) {
-                            Names.put(name, new User(name));
-                            return name;
-                        }
-                    }
-                }
-            }
-        }
 
 		public boolean getName() throws IOException{
             String message;
