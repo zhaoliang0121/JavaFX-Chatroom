@@ -25,6 +25,8 @@ public class ClientMain extends Application {
 
 	private ClientObserver writer;
 	private BufferedReader reader;
+	private ObjectOutputStream oos;
+	private ObjectInputStream ois;
 	private AnchorPane anchorPane;
 	private ArrayList<Node> elements;
 	private TextField input;
@@ -59,6 +61,8 @@ public class ClientMain extends Application {
 	}
 	
 	private void usernameInput(){
+		String message;
+		User temp;
 		usernamePop = new TextInputDialog();
 		usernamePop.setTitle("Enter username");
 		usernamePop.setHeaderText("Enter a user name you prefer");
@@ -67,7 +71,7 @@ public class ClientMain extends Application {
 		if (input.isPresent()) {
 			try {
 				username = input.get();
-                writer.println(username);
+                writer.update(null,username);
                 initView();
 			} catch (Exception e) {
 			    e.printStackTrace();
@@ -183,6 +187,8 @@ public class ClientMain extends Application {
 		InputStreamReader streamReader = new InputStreamReader(socket.getInputStream());
 		reader = new BufferedReader(streamReader);
 		writer = new ClientObserver(socket.getOutputStream());
+		oos = new ObjectOutputStream(socket.getOutputStream());
+		ois = new ObjectInputStream(socket.getInputStream());
 		Thread readerThread = new Thread(new IncomingReader());
 		readerThread.start();
 	}

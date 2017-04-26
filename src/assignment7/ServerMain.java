@@ -21,7 +21,7 @@ public class ServerMain extends Observable {
 
 	private void setUpNetworking() throws Exception {
 		@SuppressWarnings("resource")
-		ServerSocket serverSock = new ServerSocket(5000);
+		ServerSocket serverSock = new ServerSocket(4242);
 		while (true) {
 			Socket clientSocket = serverSock.accept();
 			ClientObserver writer = new ClientObserver(clientSocket.getOutputStream());
@@ -30,7 +30,7 @@ public class ServerMain extends Observable {
 			t.start();
 			this.addObserver(writer);
             synchronized (handler) {
-                handler.getName();
+               handler.getName();
             }
 			System.out.println("got a connection");
 		}
@@ -38,19 +38,21 @@ public class ServerMain extends Observable {
 
 	class ClientHandler implements Runnable {
 		private BufferedReader reader;
-
+		private ObjectOutputStream oos;
+		private ObjectInputStream ois;
 		public ClientHandler(Socket clientSocket) {
 			Socket sock = clientSocket;
 			try {
 				reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-
+				oos = new ObjectOutputStream(sock.getOutputStream());
+				ois = new ObjectInputStream(sock.getInputStream());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 		
 
-		public boolean getName() throws IOException{
+		public void getName() throws IOException{
             String message;
             synchronized (this) {
                 try {
@@ -60,13 +62,18 @@ public class ServerMain extends Observable {
                         if (!Names.containsKey(message)) {
                             Names.put(message, check);
                             System.out.println(Names.size());
-                            return true;
-                        } else return false;
+                           // User newUser = new User(message);
+                           // oos.writeObject(newUser);
+                           // oos.flush();
+                            return;
+                        } else {
+                        	oos.writeObject(null);
+                        	oos.flush();
+                        }
                     }
                 } catch (Exception e) {
                     System.out.println(e.getStackTrace());
                 }
-                return false;
             }
         }
 
