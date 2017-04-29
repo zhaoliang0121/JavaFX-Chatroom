@@ -77,7 +77,7 @@ public class ClientMain extends Application {
 				}
 				else{
 					accept = true;
-				}				
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -92,8 +92,8 @@ public class ClientMain extends Application {
 		alert.setTitle("Duplicate Username!");
 		alert.setHeaderText("This username has been used. Please restart the program to enter a new name.");
 		alert.showAndWait();
-		
-		
+
+
 	}
 	private void initView() {
 		anchorPane = new AnchorPane();
@@ -137,6 +137,7 @@ public class ClientMain extends Application {
 		chat = new TextArea();
 		chat.setPrefSize(586, 269);
 		chat.setWrapText(true);
+        chat.setEditable(false);
 		elements.add(chat);
 
 		userList = new TextArea();
@@ -163,6 +164,26 @@ public class ClientMain extends Application {
 		color.getItems().addAll("Red", "Blue", "Green", "Black");
 		color.setPromptText("Select a color");
 		color.setPrefSize(161, 31);
+        color.valueProperty().addListener((observable, oldValue, newValue) -> {
+            switch(newValue){
+                case "Red": {
+                    chat.setStyle("-fx-background-color: #FF0000;");
+                    break;
+                }
+                case "Blue": {
+                    chat.setStyle("-fx-background-color: #00ABB0;");
+                    break;
+                }
+                case "Green": {
+                    chat.setStyle("-fx-background-color: #8BA649;");
+                    break;
+                }
+                case "Black": {
+                    chat.setStyle("-fx-background-color: #060F08;");
+                    break;
+                }
+            }
+        });
 		elements.add(color);
 
 		kaomoji = new ComboBox<String>();
@@ -216,7 +237,7 @@ public class ClientMain extends Application {
 	class IncomingReader implements Runnable {
 		public void run() {
 			String message;
-			
+
 			try {
 				while ((message = reader.readLine()) != null) {
 					if (accept) {
@@ -230,20 +251,20 @@ public class ClientMain extends Application {
 		}
 	}
 
-	private void displayMessage(TextArea chat, String input) {
-		String intendedName;
-		String message;
-		String[] split = input.split(" ");
-		String name = split[0].substring(0, split[0].length() - 1);
-		if (split[1] != null && split[1].substring(0, 1).equals("@")) {
-			intendedName = split[1].substring(1, split[1].length() - 1);
-			Integer beginMessage = name.length() + 3 + intendedName.length() + 2;
-			message = name + ": " + input.substring(beginMessage, input.length());
-			if (username.equals(intendedName) || username.equals(name)) {
-				chat.appendText("PRIVATE " + message + "\n");
-			}
-			return;
-		} else
-			chat.appendText(input + "\n");
-	}
+	private void displayMessage(TextArea chat, String input){
+        String intendedName;
+        String message;
+	    String[] split = input.split(" ");
+        String name = split[0].substring(0, split[0].length()-1);
+	    if(split[1] != null && split[1].substring(0,1).equals("@")){
+	        intendedName = split[1].substring(1,split[1].length()-1);
+	        Integer beginMessage = name.length() + 3 + intendedName.length() + 2;
+            message = name + ": " +input.substring(beginMessage, input.length());
+            if(username.equals(intendedName) || username.equals(name)){
+                chat.appendText("PRIVATE " +message + "\n");
+            }
+            return;
+        }
+        else chat.appendText(input + "\n");
+    }
 }

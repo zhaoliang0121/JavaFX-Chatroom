@@ -11,7 +11,6 @@ import java.util.Scanner;
 
 public class ServerMain extends Observable {
 
-	HashMap<String, User> Names = new HashMap<>();
 	ArrayList<String> UserList;
 
 	public static void main(String[] args) {
