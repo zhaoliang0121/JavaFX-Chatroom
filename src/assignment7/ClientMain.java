@@ -22,6 +22,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -127,6 +129,7 @@ public class ClientMain extends Application {
 		menu.getMenus().add(help);
 		elements.add(menu);
 
+		
 		input = new TextField();
 		input.setPrefSize(524, 76);
 		input.setPromptText("Enter message");
@@ -149,11 +152,11 @@ public class ClientMain extends Application {
 		elements.add(chat);
 
 		privateChat = new TextArea();
-        chat.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+        privateChat.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
 		privateChat.setPrefSize(374, 246);
 		privateChat.setWrapText(true);
 		elements.add(privateChat);
-
+		
 		sendButton = new Button();
 		sendButton.setPrefSize(61, 76);
 		sendButton.setText("Send");
@@ -260,7 +263,7 @@ public class ClientMain extends Application {
 	class IncomingReader implements Runnable {
 		public void run() {
 			String message;
-
+			
 			try {
 				while ((message = reader.readLine()) != null) {
 					if (accept) {
@@ -273,9 +276,13 @@ public class ClientMain extends Application {
 			}
 		}
 	}
-
-
+	
 	private void displayMessage(TextArea chat, String input){
+		
+		Media sound = new Media(new File("receive.mp3").toURI().toString());
+		MediaPlayer mediaPlayer = new MediaPlayer(sound);
+		Media sound2 = new Media(new File("private.mp3").toURI().toString());
+		MediaPlayer mediaPlayer2 = new MediaPlayer(sound2);
         String intendedName;
         String message;
 	    String[] split = input.split(" ");
@@ -287,12 +294,19 @@ public class ClientMain extends Application {
             if(username.equals(intendedName) || username.equals(name)){
                 privateChat.appendText(new SimpleDateFormat("EEEEE, MMMMM d h:mm a").format(Calendar.getInstance().getTime()));
 				privateChat.appendText("\n"+ "PRIVATE " + message + "\n" + "\n");
+				if(!username.equals(name)){
+					mediaPlayer2.play();
+				}
             }
             return;
         }
         else{
-		chat.appendText(new SimpleDateFormat("EEEEE, MMMMM " + "d h:mm a").format(Calendar.getInstance().getTime()));
+        	
+        	chat.appendText(new SimpleDateFormat("EEEEE, MMMMM " + "d h:mm a").format(Calendar.getInstance().getTime()));
 			chat.appendText("\n" + input + "\n" + "\n");
+			if(!username.equals(name)){
+				mediaPlayer.play();
+			}
 	}
     }
 }
