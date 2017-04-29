@@ -105,7 +105,7 @@ public class ClientMain extends Application {
 	}
 
 
-    @SuppressWarnings("Could not resolve")
+    @SuppressWarnings("not resolve")
     private void initView() {
 		anchorPane = new AnchorPane();
 		elements = new ArrayList<Node>();
@@ -240,8 +240,8 @@ public class ClientMain extends Application {
 
 	private void setUpNetworking() throws Exception {
 		@SuppressWarnings("resource")
-        //Socket socket = new Socket("10.146.28.178", 4242);
-		Socket socket = new Socket("127.0.0.1", 4242);
+        Socket socket = new Socket("10.146.28.178", 4242);
+		//Socket socket = new Socket("127.0.0.1", 4242);
 		InputStreamReader streamReader = new InputStreamReader(socket.getInputStream());
 		reader = new BufferedReader(streamReader);
 		writer = new ClientObserver(socket.getOutputStream());
