@@ -24,6 +24,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class ClientMain extends Application {
@@ -42,6 +43,8 @@ public class ClientMain extends Application {
 	private TextInputDialog usernamePop;
 	private String username;
 	public String result;
+	private Text publicT;
+	private Text privateT;
 	private boolean accept;
 	private ArrayList<String> localList;
 	private Alert alert;
@@ -139,14 +142,15 @@ public class ClientMain extends Application {
 		elements.add(input);
 
 		chat = new TextArea();
-		chat.setPrefSize(586, 269);
+		chat.setPrefSize(374, 246);
 		chat.setWrapText(true);
         chat.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
         chat.setEditable(false);
 		elements.add(chat);
 
 		privateChat = new TextArea();
-		privateChat.setPrefSize(161, 269);
+        chat.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+		privateChat.setPrefSize(374, 246);
 		privateChat.setWrapText(true);
 		elements.add(privateChat);
 
@@ -202,22 +206,35 @@ public class ClientMain extends Application {
 			}
 		});
 		elements.add(kaomoji);
+		
+		publicT = new Text();
+		publicT.setText("Public Chat");
+		elements.add(publicT);
+		
+		privateT = new Text();
+		privateT.setText("Private Chat");
+		elements.add(privateT);
 
 		anchorPane.getChildren().addAll(elements);
 		AnchorPane.setTopAnchor(menu, 0.0);
 		AnchorPane.setLeftAnchor(menu, 0.0);
-		AnchorPane.setTopAnchor(privateChat, 36.0);
-		AnchorPane.setLeftAnchor(privateChat, 602.0);
+		AnchorPane.setTopAnchor(privateChat, 59.0);
+		AnchorPane.setLeftAnchor(privateChat, 389.0);
 		AnchorPane.setTopAnchor(color, 314.0);
 		AnchorPane.setLeftAnchor(color, 602.0);
 		AnchorPane.setTopAnchor(kaomoji, 352.0);
 		AnchorPane.setLeftAnchor(kaomoji, 602.0);
 		AnchorPane.setTopAnchor(sendButton, 314.0);
 		AnchorPane.setLeftAnchor(sendButton, 535.0);
-		AnchorPane.setTopAnchor(chat, 36.0);
+		AnchorPane.setTopAnchor(chat, 59.0);
 		AnchorPane.setLeftAnchor(chat, 10.0);
 		AnchorPane.setTopAnchor(input, 314.0);
 		AnchorPane.setLeftAnchor(input, 10.0);
+		AnchorPane.setTopAnchor(publicT, 45.0);
+		AnchorPane.setLeftAnchor(publicT,10.0);
+		AnchorPane.setTopAnchor(privateT, 45.0);
+		AnchorPane.setLeftAnchor(privateT, 389.0);
+		
 
 	}
 
