@@ -153,6 +153,26 @@ public class ClientMain extends Application {
 		color.getItems().addAll("Red", "Blue", "Green", "Black");
 		color.setPromptText("Select a color");
 		color.setPrefSize(161, 31);
+		color.valueProperty().addListener((observable, oldValue, newValue) -> {
+            switch(newValue){
+                case "Red": {
+                    chat.setStyle("-fx-background-color: red");
+                    break;
+                }
+                case "Blue": {
+                    chat.setStyle("-fx-background-color: blue");
+                    break;
+                }
+                case "Green": {
+                    chat.setStyle("-fx background-color: green");
+                    break;
+                }
+                case "Black": {
+                    chat.setStyle("-fx background-color: black");
+                    break;
+                }
+            }
+        });
 		elements.add(color);
 
 		kaomoji = new ComboBox<String>();
