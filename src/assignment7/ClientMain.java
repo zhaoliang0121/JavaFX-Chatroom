@@ -16,6 +16,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
@@ -25,8 +26,6 @@ public class ClientMain extends Application {
 
 	private ClientObserver writer;
 	private BufferedReader reader;
-	private ObjectOutputStream oos;
-	private ObjectInputStream ois;
 	private AnchorPane anchorPane;
 	private ArrayList<Node> elements;
 	private TextField input;
@@ -41,27 +40,27 @@ public class ClientMain extends Application {
 	public String result;
 	private boolean accept;
 	private ArrayList<String> localList;
+	private Alert alert;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-			
-			localList = new ArrayList<String>();
-			setUpNetworking();
-			accept = false;
-			while(accept == false){
-				usernameInput();
-			}
-			initView();
-			primaryStage.setScene(new Scene(anchorPane, 770, 401));
-			primaryStage.setTitle("Log in as: " + username);
-			primaryStage.show();
-			primaryStage.setOnCloseRequest(event -> {
-				System.exit(0);
-			});
+
+		localList = new ArrayList<String>();
+		setUpNetworking();
+		accept = false;
+		while(accept == false){
+			usernameInput();
+		}
+		initView();
+		primaryStage.setScene(new Scene(anchorPane, 770, 401));
+		primaryStage.setTitle("Log in as: " + username);
+		primaryStage.show();
+		primaryStage.setOnCloseRequest(event -> {
+			System.exit(0);
+		});
 	}
-	
-	
-	private void usernameInput(){
+
+	private void usernameInput() {
 		usernamePop = new TextInputDialog();
 		usernamePop.setTitle("Enter username");
 		usernamePop.setHeaderText("Enter a user name you prefer");
@@ -73,17 +72,30 @@ public class ClientMain extends Application {
 				writer.update(null,username);
 				if(localList.contains(username)){
 					accept = false;
+					usernameAlert();
+					System.exit(0);
 				}
 				else{
 					accept = true;
-				}
+				}				
 			} catch (Exception e) {
-			    e.printStackTrace();
-            }
+				e.printStackTrace();
+			}
 
-        }
+		} else {
+			System.exit(1);
+		}
 	}
-	private void initView(){
+
+	private void usernameAlert(){
+		alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Duplicate Username!");
+		alert.setHeaderText("This username has been used. Please restart the program to enter a new name.");
+		alert.showAndWait();
+		
+		
+	}
+	private void initView() {
 		anchorPane = new AnchorPane();
 		elements = new ArrayList<Node>();
 
@@ -111,16 +123,15 @@ public class ClientMain extends Application {
 		input = new TextField();
 		input.setPrefSize(524, 76);
 		input.setPromptText("Enter message");
-        input.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if(event.getCode().equals(KeyCode.ENTER)){
-                    writer.println(username + ": " + input.getText());
-                    writer.flush();
-                    input.clear();
-                }
-            }
-        });
+		input.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent event) {
+				if (event.getCode().equals(KeyCode.ENTER)) {
+					writer.update(null, username + ": " + input.getText());
+					input.clear();
+				}
+			}
+		});
 		elements.add(input);
 
 		chat = new TextArea();
@@ -141,8 +152,7 @@ public class ClientMain extends Application {
 
 			@Override
 			public void handle(ActionEvent event) {
-				writer.println(username + ": " + input.getText());
-				writer.flush();
+				writer.update(null, username + ": " + input.getText());
 				input.clear();
 
 			}
@@ -153,26 +163,6 @@ public class ClientMain extends Application {
 		color.getItems().addAll("Red", "Blue", "Green", "Black");
 		color.setPromptText("Select a color");
 		color.setPrefSize(161, 31);
-		color.valueProperty().addListener((observable, oldValue, newValue) -> {
-            switch(newValue){
-                case "Red": {
-                    chat.setStyle("-fx-background-color: red");
-                    break;
-                }
-                case "Blue": {
-                    chat.setStyle("-fx-background-color: blue");
-                    break;
-                }
-                case "Green": {
-                    chat.setStyle("-fx background-color: green");
-                    break;
-                }
-                case "Black": {
-                    chat.setStyle("-fx background-color: black");
-                    break;
-                }
-            }
-        });
 		elements.add(color);
 
 		kaomoji = new ComboBox<String>();
@@ -226,33 +216,34 @@ public class ClientMain extends Application {
 	class IncomingReader implements Runnable {
 		public void run() {
 			String message;
+			
 			try {
-				while ((message = reader.readLine()) != null){
-                    			if(accept){
-                        			displayMessage(chat, message);
-                   			 } else localList.add(message);
-                		}
+				while ((message = reader.readLine()) != null) {
+					if (accept) {
+						displayMessage(chat, message);
+					} else
+						localList.add(message);
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
-	
-	private void displayMessage(TextArea chat, String input){
-        String intendedName;
-        String message;
-	    String[] split = input.split(" ");
-        String name = split[0].substring(0, split[0].length()-1);
-	    if(split[1] != null && split[1].substring(0,1).equals("@")){
-	        intendedName = split[1].substring(1,split[1].length()-1);
-	        Integer beginMessage = name.length() + 3 + intendedName.length() + 2;
-            message = name + ": " +input.substring(beginMessage, input.length());
-            if(username.equals(intendedName) || username.equals(name)){
-                chat.appendText("PRIVATE " +message + "\n");
-            }
-            return;
-        }
-        else chat.appendText(input + "\n");
-    }
 
+	private void displayMessage(TextArea chat, String input) {
+		String intendedName;
+		String message;
+		String[] split = input.split(" ");
+		String name = split[0].substring(0, split[0].length() - 1);
+		if (split[1] != null && split[1].substring(0, 1).equals("@")) {
+			intendedName = split[1].substring(1, split[1].length() - 1);
+			Integer beginMessage = name.length() + 3 + intendedName.length() + 2;
+			message = name + ": " + input.substring(beginMessage, input.length());
+			if (username.equals(intendedName) || username.equals(name)) {
+				chat.appendText("PRIVATE " + message + "\n");
+			}
+			return;
+		} else
+			chat.appendText(input + "\n");
+	}
 }
