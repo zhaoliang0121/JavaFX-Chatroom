@@ -261,10 +261,14 @@ public class ClientMain extends Application {
 	        Integer beginMessage = name.length() + 3 + intendedName.length() + 2;
             message = name + ": " +input.substring(beginMessage, input.length());
             if(username.equals(intendedName) || username.equals(name)){
-                chat.appendText("PRIVATE " +message + "\n");
+                chat.appendText(new SimpleDateFormat("EEEEE, MMMMM d hh:mm a").format(Calendar.getInstance().getTime()));
+				chat.appendText("\n"+ "PRIVATE " + message + "\n" + "\n");
             }
             return;
         }
-        else chat.appendText(input + "\n");
+        else{ 
+		chat.appendText(new SimpleDateFormat("EEEEE, MMMMM " + "d hh:mm a").format(Calendar.getInstance().getTime()));
+			chat.appendText("\n" + input + "\n" + "\n");
+	}
     }
 }
