@@ -1,3 +1,15 @@
+/* ChatClient ClientMain.java
+ * EE422C Project 7 submission by
+ * Zhaofeng Liang
+ * zl4685
+ * 16230
+ * Zohaib Imam
+ * szi58
+ * 16230
+ * Slip days used: 1
+ * https://github.com/iamzoh/assignment7
+ * Spring 2017
+ */
 package assignment7;
 
 import java.io.*;
@@ -25,6 +37,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
 
 public class ClientMain extends Application {
 

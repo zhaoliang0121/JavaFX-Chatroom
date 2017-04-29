@@ -1,3 +1,15 @@
+/* ChatClient ServerMain.java
+ * EE422C Project 7 submission by
+ * Zhaofeng Liang
+ * zl4685
+ * 16230
+ * Zohaib Imam
+ * szi58
+ * 16230
+ * Slip days used: 1
+ * https://github.com/iamzoh/assignment7
+ * Spring 2017
+ */
 package assignment7;
 
 import java.io.*;
