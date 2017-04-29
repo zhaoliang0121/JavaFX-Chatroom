@@ -2,7 +2,9 @@ package assignment7;
 
 import java.io.*;
 import java.net.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -20,6 +22,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 public class ClientMain extends Application {
@@ -77,7 +81,7 @@ public class ClientMain extends Application {
 				}
 				else{
 					accept = true;
-				}
+				}				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -92,8 +96,8 @@ public class ClientMain extends Application {
 		alert.setTitle("Duplicate Username!");
 		alert.setHeaderText("This username has been used. Please restart the program to enter a new name.");
 		alert.showAndWait();
-
-
+		
+		
 	}
 	private void initView() {
 		anchorPane = new AnchorPane();
@@ -123,6 +127,7 @@ public class ClientMain extends Application {
 		input = new TextField();
 		input.setPrefSize(524, 76);
 		input.setPromptText("Enter message");
+		input.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
 		input.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
@@ -137,7 +142,7 @@ public class ClientMain extends Application {
 		chat = new TextArea();
 		chat.setPrefSize(586, 269);
 		chat.setWrapText(true);
-        chat.setEditable(false);
+		chat.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
 		elements.add(chat);
 
 		userList = new TextArea();
@@ -164,26 +169,6 @@ public class ClientMain extends Application {
 		color.getItems().addAll("Red", "Blue", "Green", "Black");
 		color.setPromptText("Select a color");
 		color.setPrefSize(161, 31);
-        color.valueProperty().addListener((observable, oldValue, newValue) -> {
-            switch(newValue){
-                case "Red": {
-                    chat.setStyle("-fx-background-color: #FF0000;");
-                    break;
-                }
-                case "Blue": {
-                    chat.setStyle("-fx-background-color: #00ABB0;");
-                    break;
-                }
-                case "Green": {
-                    chat.setStyle("-fx-background-color: #8BA649;");
-                    break;
-                }
-                case "Black": {
-                    chat.setStyle("-fx-background-color: #060F08;");
-                    break;
-                }
-            }
-        });
 		elements.add(color);
 
 		kaomoji = new ComboBox<String>();
@@ -218,7 +203,7 @@ public class ClientMain extends Application {
 
 	private void setUpNetworking() throws Exception {
 		@SuppressWarnings("resource")
-		Socket socket = new Socket("127.0.0.1", 4242);
+		Socket socket = new Socket("10.146.28.178", 4242);
 		InputStreamReader streamReader = new InputStreamReader(socket.getInputStream());
 		reader = new BufferedReader(streamReader);
 		writer = new ClientObserver(socket.getOutputStream());
@@ -237,7 +222,7 @@ public class ClientMain extends Application {
 	class IncomingReader implements Runnable {
 		public void run() {
 			String message;
-
+			
 			try {
 				while ((message = reader.readLine()) != null) {
 					if (accept) {
@@ -251,24 +236,23 @@ public class ClientMain extends Application {
 		}
 	}
 
-	private void displayMessage(TextArea chat, String input){
-        String intendedName;
-        String message;
-	    String[] split = input.split(" ");
-        String name = split[0].substring(0, split[0].length()-1);
-	    if(split[1] != null && split[1].substring(0,1).equals("@")){
-	        intendedName = split[1].substring(1,split[1].length()-1);
-	        Integer beginMessage = name.length() + 3 + intendedName.length() + 2;
-            message = name + ": " +input.substring(beginMessage, input.length());
-            if(username.equals(intendedName) || username.equals(name)){
-                chat.appendText(new SimpleDateFormat("EEEEE, MMMMM d hh:mm a").format(Calendar.getInstance().getTime()));
+	private void displayMessage(TextArea chat, String input) {
+		String intendedName;
+		String message;
+		String[] split = input.split(" ");
+		String name = split[0].substring(0, split[0].length() - 1);
+		if (split[1] != null && split[1].substring(0, 1).equals("@")) {
+			intendedName = split[1].substring(1, split[1].length() - 1);
+			Integer beginMessage = name.length() + 3 + intendedName.length() + 2;
+			message = name + ": " + input.substring(beginMessage, input.length());
+			if (username.equals(intendedName) || username.equals(name)) {
+				chat.appendText(new SimpleDateFormat("EEEEE, MMMMM d hh:mm a").format(Calendar.getInstance().getTime()));
 				chat.appendText("\n"+ "PRIVATE " + message + "\n" + "\n");
-            }
-            return;
-        }
-        else{ 
-		chat.appendText(new SimpleDateFormat("EEEEE, MMMMM " + "d hh:mm a").format(Calendar.getInstance().getTime()));
+			}
+			return;
+		} else{
+			chat.appendText(new SimpleDateFormat("EEEEE, MMMMM " + "d hh:mm a").format(Calendar.getInstance().getTime()));
 			chat.appendText("\n" + input + "\n" + "\n");
+		}
 	}
-    }
 }

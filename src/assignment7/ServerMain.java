@@ -11,6 +11,7 @@ import java.util.Scanner;
 
 public class ServerMain extends Observable {
 
+	HashMap<String, User> Names = new HashMap<>();
 	ArrayList<String> UserList;
 
 	public static void main(String[] args) {
@@ -90,7 +91,7 @@ public class ServerMain extends Observable {
 					notifyObservers(message);
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 	}
