@@ -5,14 +5,11 @@ import java.net.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Optional;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -44,12 +41,12 @@ public class ClientMain extends Application {
 	private ComboBox<String> kaomoji;
 	private TextInputDialog usernamePop;
 	private String username;
-	public String result;
 	private Text publicT;
 	private Text privateT;
 	private boolean accept;
 	private ArrayList<String> localList;
 	private Alert alert;
+    private Scene scene;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -61,7 +58,9 @@ public class ClientMain extends Application {
 			usernameInput();
 		}
 		initView();
-		primaryStage.setScene(new Scene(anchorPane, 770, 401));
+        scene = new Scene(anchorPane, 770, 401);
+        //scene.getStylesheets().add("assignment7/Blue.css");
+		primaryStage.setScene(scene);
 		primaryStage.setTitle("Log in as: " + username);
 		primaryStage.show();
 		primaryStage.setOnCloseRequest(event -> {
@@ -104,7 +103,10 @@ public class ClientMain extends Application {
 
 
 	}
-	private void initView() {
+
+
+    @SuppressWarnings("Could not resolve")
+    private void initView() {
 		anchorPane = new AnchorPane();
 		elements = new ArrayList<Node>();
 
@@ -173,25 +175,20 @@ public class ClientMain extends Application {
 		});
 
 		color = new ComboBox<String>();
-		color.getItems().addAll("Red", "Blue", "Green", "Black");
+		color.getItems().addAll("Red", "Blue");
 		color.setPromptText("Select a color");
 		color.setPrefSize(161, 31);
         color.valueProperty().addListener((observable, oldValue, newValue) -> {
+
             switch(newValue){
                 case "Red": {
-                    chat.setStyle("-fx-background-color: #FF0000;");
+                    scene.getStylesheets().remove("assignment7/Blue.css");
+                    scene.getStylesheets().add("assignment7/Red.css");
                     break;
                 }
                 case "Blue": {
-                    chat.setStyle("-fx-background-color: #00ABB0;");
-                    break;
-                }
-                case "Green": {
-                    chat.setStyle("-fx-background-color: #8BA649;");
-                    break;
-                }
-                case "Black": {
-                    chat.setStyle("-fx-background-color: #060F08;");
+                    scene.getStylesheets().remove("assignment7/Red.css");
+                    scene.getStylesheets().add("assignment7/Blue.css");
                     break;
                 }
             }
