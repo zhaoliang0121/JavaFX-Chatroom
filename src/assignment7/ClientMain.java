@@ -207,18 +207,32 @@ public class ClientMain extends Application {
 		public void run() {
 			String message;
 			try {
-				if(accept == false){
-					while ((message = reader.readLine()) != null) {
-						localList.add(message);
-					}
-				}
-				while ((message = reader.readLine()) != null) {
-					chat.appendText(message + "\n");
-				}
+				while ((message = reader.readLine()) != null){
+                    			if(accept){
+                        			displayMessage(chat, message);
+                   			 } else localList.add(message);
+                		}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
+	
+	private void displayMessage(TextArea chat, String input){
+        String intendedName;
+        String message;
+	    String[] split = input.split(" ");
+        String name = split[0].substring(0, split[0].length()-1);
+	    if(split[1] != null && split[1].substring(0,1).equals("@")){
+	        intendedName = split[1].substring(1,split[1].length()-1);
+	        Integer beginMessage = name.length() + 3 + intendedName.length() + 2;
+            message = name + ": " +input.substring(beginMessage, input.length());
+            if(username.equals(intendedName) || username.equals(name)){
+                chat.appendText("PRIVATE " +message + "\n");
+            }
+            return;
+        }
+        else chat.appendText(input + "\n");
+    }
 
 }
