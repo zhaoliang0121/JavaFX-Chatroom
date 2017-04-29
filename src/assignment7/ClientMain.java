@@ -38,31 +38,30 @@ public class ClientMain extends Application {
 	private ComboBox<String> kaomoji;
 	private TextInputDialog usernamePop;
 	private String username;
+	public String result;
+	private boolean accept;
+	private ArrayList<String> localList;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		try {
+			
+			localList = new ArrayList<String>();
 			setUpNetworking();
-			usernameInput();
+			accept = false;
+			while(accept == false){
+				usernameInput();
+			}
+			initView();
 			primaryStage.setScene(new Scene(anchorPane, 770, 401));
 			primaryStage.setTitle("Log in as: " + username);
 			primaryStage.show();
 			primaryStage.setOnCloseRequest(event -> {
 				System.exit(0);
 			});
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 	
-	public String getUserName(){
-		return this.username;
-	}
 	
 	private void usernameInput(){
-		String message;
-		User temp;
 		usernamePop = new TextInputDialog();
 		usernamePop.setTitle("Enter username");
 		usernamePop.setHeaderText("Enter a user name you prefer");
@@ -71,8 +70,13 @@ public class ClientMain extends Application {
 		if (input.isPresent()) {
 			try {
 				username = input.get();
-                writer.update(null,username);
-                initView();
+				writer.update(null,username);
+				if(localList.contains(username)){
+					accept = false;
+				}
+				else{
+					accept = true;
+				}
 			} catch (Exception e) {
 			    e.printStackTrace();
             }
@@ -187,8 +191,6 @@ public class ClientMain extends Application {
 		InputStreamReader streamReader = new InputStreamReader(socket.getInputStream());
 		reader = new BufferedReader(streamReader);
 		writer = new ClientObserver(socket.getOutputStream());
-		oos = new ObjectOutputStream(socket.getOutputStream());
-		ois = new ObjectInputStream(socket.getInputStream());
 		Thread readerThread = new Thread(new IncomingReader());
 		readerThread.start();
 	}
@@ -196,7 +198,6 @@ public class ClientMain extends Application {
 	public static void main(String args[]) {
 		try {
 			launch(args);
-			new ClientMain().setUpNetworking();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -206,6 +207,11 @@ public class ClientMain extends Application {
 		public void run() {
 			String message;
 			try {
+				if(accept == false){
+					while ((message = reader.readLine()) != null) {
+						localList.add(message);
+					}
+				}
 				while ((message = reader.readLine()) != null) {
 					chat.appendText(message + "\n");
 				}
