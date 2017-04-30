@@ -243,9 +243,9 @@ public class ClientMain extends Application {
 		AnchorPane.setLeftAnchor(chat, 10.0);
 		AnchorPane.setTopAnchor(input, 314.0);
 		AnchorPane.setLeftAnchor(input, 10.0);
-		AnchorPane.setTopAnchor(publicT, 45.0);
+		AnchorPane.setTopAnchor(publicT, 40.0);
 		AnchorPane.setLeftAnchor(publicT,10.0);
-		AnchorPane.setTopAnchor(privateT, 45.0);
+		AnchorPane.setTopAnchor(privateT, 40.0);
 		AnchorPane.setLeftAnchor(privateT, 389.0);
 		
 
@@ -253,8 +253,8 @@ public class ClientMain extends Application {
 
 	private void setUpNetworking() throws Exception {
 		@SuppressWarnings("resource")
-        //Socket socket = new Socket("10.146.28.178", 4242);
-		Socket socket = new Socket("127.0.0.1", 4242);
+        Socket socket = new Socket("10.146.28.178", 4242);
+		//Socket socket = new Socket("127.0.0.1", 4242);
 		InputStreamReader streamReader = new InputStreamReader(socket.getInputStream());
 		reader = new BufferedReader(streamReader);
 		writer = new ClientObserver(socket.getOutputStream());
@@ -303,7 +303,7 @@ public class ClientMain extends Application {
             message = name + ": " +input.substring(beginMessage, input.length());
             if(username.equals(intendedName) || username.equals(name)){
                 privateChat.appendText(new SimpleDateFormat("EEEEE, MMMMM d h:mm a").format(Calendar.getInstance().getTime()));
-				privateChat.appendText("\n"+ "PRIVATE " + message + "\n" + "\n");
+				privateChat.appendText("\n"+ message + "\n" + "\n");
 				if(!username.equals(name)){
 					mediaPlayer2.play();
 				}
