@@ -1,15 +1,3 @@
-/* ChatClient ClientMain.java
- * EE422C Project 7 submission by
- * Zhaofeng Liang
- * zl4685
- * 16230
- * Zohaib Imam
- * szi58
- * 16230
- * Slip days used: 1
- * https://github.com/iamzoh/assignment7
- * Spring 2017
- */
 package assignment7;
 
 import java.io.*;
@@ -37,7 +25,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
 
 public class ClientMain extends Application {
 
@@ -210,7 +197,8 @@ public class ClientMain extends Application {
 
 		kaomoji = new ComboBox<String>();
 		kaomoji.setPrefSize(161, 31);
-		kaomoji.getItems().addAll("ヽ(`⌒´メ)ノ", "(눈_눈)", "(◕‿◕)♡", "ლ(¯ロ¯ლ)");
+		kaomoji.getItems().addAll("ヽ(`⌒´メ)ノ", "(눈_눈)", "(◕‿◕)♡", "ლ(¯ロ¯ლ)","ლ(ಠ_ಠ ლ","¯\\_(ツ)_/¯","ヾ(☆'∀'☆)",
+				"(⊃｡•́‿•̀｡)⊃","┌∩┐(◣_◢)┌∩┐","٩(╬ʘ益ʘ╬)۶","(╯°□°)╯︵ ┻━┻ ","ε=ε=ε=ε=┌(;￣▽￣)┘","ʕ •ᴥ• ʔ?");
 		kaomoji.setPromptText("Pick your emoji!~");
 		kaomoji.valueProperty().addListener(new ChangeListener<String>() {
 			@Override
@@ -253,8 +241,8 @@ public class ClientMain extends Application {
 
 	private void setUpNetworking() throws Exception {
 		@SuppressWarnings("resource")
-        Socket socket = new Socket("10.146.28.178", 4242);
-		//Socket socket = new Socket("127.0.0.1", 4242);
+        //Socket socket = new Socket("10.146.28.178", 4242);
+		Socket socket = new Socket("127.0.0.1", 4242);
 		InputStreamReader streamReader = new InputStreamReader(socket.getInputStream());
 		reader = new BufferedReader(streamReader);
 		writer = new ClientObserver(socket.getOutputStream());
